@@ -1,14 +1,16 @@
 module JekyllAssetPostprocessor
 
-    def self.hash(file_path, content)
-        Digest::MD5.hexdigest(content)
-    end
-
+    # Register a new asset with Jekyll from the staging directory in order
+    # to be moved into the final build directory.
     def self.new_jekyll_asset(site, staging_path, output_path, filename)
         site.static_files << Jekyll::StaticFile.new(site, staging_path, output_path, filename)
     end
 
+    # Process a single asset file.
     def self.process(site, file_path)
+        generated_cache_hash = cache_hash(file_path)
+        return cache[generated_cache_hash] if cache.key?(generated_cache_hash)
+
         source = site.source
         path = File.join(source, file_path)
         basename = File.basename(path)
@@ -23,22 +25,22 @@ module JekyllAssetPostprocessor
             destination_path += '/' + split_path[1..-2].join('/')
         end
         
-        file_hash = nil
+        generated_file_hash = nil
         new_extension = extension
         rendered = nil
         if extension == '.scss'
             new_extension = '.css'
             File.open(path, 'r') do |file|
                 rendered = SassC::Engine.new(file.read, syntax: :scss, style: :compressed).render
-                file_hash = hash(file_path, rendered)
+                generated_file_hash = file_hash(file_path, rendered)
             end
         else
             File.open(path, 'rb') do |file|
-                file_hash = hash(file_hash, file.read)
+                generated_file_hash = file_hash(file_path, file.read)
             end
         end
 
-        generated_filename = "#{filename}-#{file_hash}#{new_extension}"
+        generated_filename = "#{filename}-#{generated_file_hash}#{new_extension}"
         staging_destination = File.join(source, staging_path, destination_path)
 
         FileUtils.mkpath(staging_destination) unless File.directory?(staging_destination)
@@ -52,7 +54,10 @@ module JekyllAssetPostprocessor
         end
 
         new_jekyll_asset(site, staging_path, destination_path, generated_filename)
-        return "/" + File.join(destination_path, generated_filename)
+
+        generated_asset_site_path = "/" + File.join(destination_path, generated_filename)
+        cache[cache_hash(file_path)] = generated_asset_site_path
+        return generated_asset_site_path
 
     end
 
