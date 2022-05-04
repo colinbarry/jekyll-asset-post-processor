@@ -9,6 +9,7 @@ Suffix your Jekyll assets with cache-busting version hashes
 - Produce a version hash that's consistent across environments and Git friendly.
 - The ability to import assets within HTML and Sass files.
 - Simple to setup and use, matching Jekyll's simplicity.
+- No inline templates: you handle the code, the plugin handles the assets.
 
 Used in production at [darcysupply.com](https://darcysupply.com).
 
