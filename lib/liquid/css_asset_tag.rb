@@ -10,15 +10,21 @@ module JekyllAssetPostprocessor
             site = context.registers[:site]
             page = context.registers[:page]
 
-            if @args != ''
-                stylesheet_property = @args
-                JekyllAssetPostprocessor::process(site.source, stylesheet_property)
-            elsif page.key?('stylesheet')
-                stylesheet_property = page['stylesheet']
-                puts stylesheet_property
-                JekyllAssetPostprocessor::process(site.source, stylesheet_property)
+            stylesheet_path = @args
+            if @args[0] == '@'
+                site_property = @args[1..-1]
+                if site_property.length <= 0
+                    raise 'No variable given'
+                end
+                stylesheet_path = page[site_property]
+            end
+            
+            if stylesheet_path.length == 0
+                raise 'Empty stylesheet path given'
             end
 
+            JekyllAssetPostprocessor::process(site, stylesheet_path)
+            
             return 'debug'
         end
     end
