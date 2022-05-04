@@ -1,7 +1,7 @@
 module JekyllAssetPostprocessor
 
     def self.hash(file_path, content)
-        Digest::MD5.hexdigest(file_path + content)
+        Digest::MD5.hexdigest(content)
     end
 
     def self.new_jekyll_asset(site, staging_path, output_path, filename)
@@ -31,7 +31,7 @@ module JekyllAssetPostprocessor
                 rendered = file.read
             end
 
-            file_hash = hash(file_path, file.read)
+            file_hash = hash(file_path, rendered)
 
             generated_filename = "#{filename}-#{file_hash}.css"
             staging_destination = File.join(source, staging_path, destination_path)
@@ -40,6 +40,7 @@ module JekyllAssetPostprocessor
             File.open(File.join(staging_destination, generated_filename), 'w') do |file|
                 file.write(rendered)
                 new_jekyll_asset(site, staging_path, destination_path, generated_filename)
+                return "/" + File.join(destination_path, generated_filename)
             end
         end
     end

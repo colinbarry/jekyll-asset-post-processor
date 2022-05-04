@@ -1,6 +1,6 @@
 module JekyllAssetPostprocessor
 
-    class CSSAssetTag < Liquid::Tag
+    class ProcessAssetTag < Liquid::Tag
         def initialize(tag_name, args, token)
             super
             @args = args.strip
@@ -24,10 +24,8 @@ module JekyllAssetPostprocessor
             end
 
             JekyllAssetPostprocessor::process(site, stylesheet_path)
-            
-            return 'debug'
         end
     end
-    Liquid::Template.register_tag('css_asset', CSSAssetTag)
+    Liquid::Template.register_tag('process_asset', ProcessAssetTag)
 
 end

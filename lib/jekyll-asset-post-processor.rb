@@ -6,4 +6,4 @@ require 'jekyll'
 require 'sassc'
 
 require 'process'
-require 'liquid/css_asset_tag'
+require 'liquid/process_asset_tag'
