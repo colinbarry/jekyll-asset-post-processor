@@ -22,27 +22,38 @@ module JekyllAssetPostprocessor
         if split_path.length > 2
             destination_path += '/' + split_path[1..-2].join('/')
         end
-
-        File.open(path) do |file|
-            rendered = ''
-            if extension == '.scss'
+        
+        file_hash = nil
+        new_extension = extension
+        rendered = nil
+        if extension == '.scss'
+            new_extension = '.css'
+            File.open(path, 'r') do |file|
                 rendered = SassC::Engine.new(file.read, syntax: :scss, style: :compressed).render
-            else
-                rendered = file.read
+                file_hash = hash(file_path, rendered)
             end
-
-            file_hash = hash(file_path, rendered)
-
-            generated_filename = "#{filename}-#{file_hash}.css"
-            staging_destination = File.join(source, staging_path, destination_path)
-
-            FileUtils.mkpath(staging_destination) unless File.directory?(staging_destination)
-            File.open(File.join(staging_destination, generated_filename), 'w') do |file|
-                file.write(rendered)
-                new_jekyll_asset(site, staging_path, destination_path, generated_filename)
-                return "/" + File.join(destination_path, generated_filename)
+        else
+            File.open(path, 'rb') do |file|
+                file_hash = hash(file_hash, file.read)
             end
         end
+
+        generated_filename = "#{filename}-#{file_hash}#{new_extension}"
+        staging_destination = File.join(source, staging_path, destination_path)
+
+        FileUtils.mkpath(staging_destination) unless File.directory?(staging_destination)
+        generated_staging_path = File.join(staging_destination, generated_filename)
+        if !rendered.nil?
+            File.open(generated_staging_path, 'w') do |file|
+                file.write(rendered)
+            end
+        else
+            FileUtils.cp(path, File.join(staging_destination, generated_filename))
+        end
+
+        new_jekyll_asset(site, staging_path, destination_path, generated_filename)
+        return "/" + File.join(destination_path, generated_filename)
+
     end
 
 end
