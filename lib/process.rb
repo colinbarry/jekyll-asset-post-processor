@@ -11,7 +11,10 @@ module JekyllAssetPostprocessor
     end
 
     # Process a single asset file.
-    def self.process(site, file_path, jekyll_config)
+    def self.process(context, file_path)
+        site = context.registers[:site]
+        jekyll_config = site.config
+
         generated_cache_hash = cache_hash(file_path)
         return cache[generated_cache_hash] if cache.key?(generated_cache_hash)
 
@@ -36,7 +39,8 @@ module JekyllAssetPostprocessor
         if extension == '.scss'
             new_extension = '.css'
             File.open(path, 'r') do |file|
-                rendered = SassC::Engine.new(file.read, syntax: :scss, style: :compressed).render
+                template = Liquid::Template.parse(file.read)
+                rendered = SassC::Engine.new(template.render(context), syntax: :scss, style: :compressed).render
                 generated_file_hash = file_hash(file_path, rendered)
             end
         else
