@@ -6,6 +6,8 @@ require 'jekyll'
 require 'sassc'
 
 require 'cache'
+require 'config'
+require 'hash'
 require 'process'
 require 'liquid/process_asset_tag'
 

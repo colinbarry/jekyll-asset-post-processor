@@ -14,7 +14,7 @@ module JekyllSiteExtension
             base_write = instance_method(:write)
             define_method(:write) do
                 return_value = base_write.bind(self).call
-                # remove staged assets here
+                JekyllAssetPostprocessor::remove_staged_assets(self.config)
                 return_value
             end
         end

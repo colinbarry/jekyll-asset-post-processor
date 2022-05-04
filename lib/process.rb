@@ -1,4 +1,8 @@
 module JekyllAssetPostprocessor
+    def self.remove_staged_assets(jekyll_config)
+        staging_path = File.join(config_staging_path(jekyll_config))
+        FileUtils.rm_rf(staging_path)
+    end
 
     # Register a new asset with Jekyll from the staging directory in order
     # to be moved into the final build directory.
@@ -7,7 +11,7 @@ module JekyllAssetPostprocessor
     end
 
     # Process a single asset file.
-    def self.process(site, file_path)
+    def self.process(site, file_path, jekyll_config)
         generated_cache_hash = cache_hash(file_path)
         return cache[generated_cache_hash] if cache.key?(generated_cache_hash)
 
@@ -18,8 +22,9 @@ module JekyllAssetPostprocessor
         extension = File.extname(basename)
 
         # generate the destination path, by default insert into assets directory
-        staging_path = '_assets/staging'
-        destination_path = 'assets'
+        staging_path = config_staging_path(jekyll_config)
+        destination_path = config_destination_path(jekyll_config)
+
         split_path = file_path.split("/")
         if split_path.length > 2
             destination_path += '/' + split_path[1..-2].join('/')

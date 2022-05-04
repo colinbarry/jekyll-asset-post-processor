@@ -23,7 +23,7 @@ module JekyllAssetPostprocessor
                 raise 'Empty stylesheet path given'
             end
 
-            JekyllAssetPostprocessor::process(site, stylesheet_path)
+            JekyllAssetPostprocessor::process(site, stylesheet_path, site.config)
         end
     end
     Liquid::Template.register_tag('process_asset', ProcessAssetTag)
