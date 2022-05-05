@@ -1,5 +1,5 @@
 # jekyll-asset-post-processor
-Suffix your Jekyll assets with cache-busting version hashes
+Process then suffix your Jekyll assets with cache busting version hashes
 
 ## How It Works
 
@@ -42,9 +42,13 @@ Sass files inherit the static Liquid variables from the page that imported it. I
 }
 ```
 
+### Version Hashing
+
+The module creates an MD5 digest hash based on the final rendered contents of the file. This makes the version hash consistent across environments, especially since Git doesn't preserve modification dates, and means on CDN deploy the only new assets that get updated are the ones that have changed.
+
 ## Setup
 
-1. Add `gem "jekyll-asset-post-processor` to your Gemfile and run `bundle install`.
+1. Add `gem "jekyll-asset-post-processor"` to your Gemfile and run `bundle install`.
 2. Add `jekyll-asset-post-processor` to plugins in `_config.yml`
 ```yaml
 plugins:

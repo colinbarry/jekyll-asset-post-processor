@@ -3,7 +3,7 @@ module JekyllAssetPostProcessor
     # Subclass any processors with JekyllAssetPostProcessor::Processor.
     #
     # To register your processor:
-    #     `JekyllAssetPostProcessor::register_process('.ext', processor)`
+    #     `JekyllAssetPostProcessor::register_processor('.ext', processor)`
     class Processor
         # If overriding you are required to call `super`.
         def initialize(filename, extension, source_path)
