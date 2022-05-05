@@ -1,4 +1,7 @@
+# See lib/processor.rb for full documentation.
+
 module JekyllAssetPostProcessor
+    
     class SassProcessor < JekyllAssetPostProcessor::Processor
 
         def new_extension
