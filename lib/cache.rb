@@ -1,4 +1,4 @@
-module JekyllAssetPostprocessor
+module JekyllAssetPostProcessor
     # Return the cache and create it if not present.
     def self.cache
         @cache ||= {}

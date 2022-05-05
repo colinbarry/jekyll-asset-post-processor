@@ -1,4 +1,4 @@
-module JekyllAssetPostprocessor
+module JekyllAssetPostProcessor
     def self.remove_staged_assets(jekyll_config)
         staging_path = File.join(config_staging_path(jekyll_config))
         FileUtils.rm_rf(staging_path)
@@ -54,14 +54,16 @@ module JekyllAssetPostprocessor
 
         FileUtils.mkpath(staging_destination) unless File.directory?(staging_destination)
         generated_staging_path = File.join(staging_destination, generated_filename)
-        if !rendered.nil?
-            File.open(generated_staging_path, 'w') do |file|
-                file.write(rendered)
+        if !File.file?(generated_staging_path)
+            if !rendered.nil?
+                File.open(generated_staging_path, 'w') do |file|
+                    file.write(rendered)
+                end
+            else
+                FileUtils.cp(path, File.join(staging_destination, generated_filename))
             end
-        else
-            FileUtils.cp(path, File.join(staging_destination, generated_filename))
         end
-
+        
         new_jekyll_asset(site, staging_path, destination_path, generated_filename)
 
         generated_asset_site_path = "/" + File.join(destination_path, generated_filename)

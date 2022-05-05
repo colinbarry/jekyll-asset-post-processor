@@ -1,4 +1,4 @@
-module JekyllAssetPostprocessor
+module JekyllAssetPostProcessor
     # Generate a hash to be used in the internal cache to avoid processing
     # a file more than once per build.
     def self.cache_hash(file_path)

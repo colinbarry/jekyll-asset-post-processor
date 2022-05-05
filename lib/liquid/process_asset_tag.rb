@@ -1,4 +1,4 @@
-module JekyllAssetPostprocessor
+module JekyllAssetPostProcessor
 
     class ProcessAssetTag < Liquid::Tag
         def initialize(tag_name, args, token)
@@ -14,7 +14,7 @@ module JekyllAssetPostprocessor
                 raise 'No asset given to process'
             end
 
-            JekyllAssetPostprocessor::process(context, stylesheet_path)
+            JekyllAssetPostProcessor::process(context, stylesheet_path)
         end
     end
     Liquid::Template.register_tag('process_asset', ProcessAssetTag)
