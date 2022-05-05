@@ -32,7 +32,7 @@ Because Liquid variables are supported, you can pass a page provided variable as
 
 Sass files are parsed with Liquid, rendered with `sassc`, and then minified.
 
-Sass files inherit the static Liquid variables from the page that imported it. In cases where a file is imported more than once, the variables present will be from the first page that imported it. Therefore it's recommended not to use variables in global files that are imported more than once.
+Sass files inherit the static Liquid variables from the page that imported it. In cases where a file is imported more than once, the variables present will be from the first page that imported it.
 
 ```css
 .app-glyph {
@@ -40,10 +40,33 @@ Sass files inherit the static Liquid variables from the page that imported it. I
 }
 ```
 
-## Setup (WIP)
+## Setup
 
-1. Add the gem to Gemfile and run `bundle install`.
-2. Create a `_plugins` folder in the root of your Jekyll site, create a Ruby file or your naming, and add `require "jekyll-asset-post-processor"`.
+1. Add the gem to your Gemfile and run `bundle install`.
+2. Add `jekyll-asset-post-processor` to plugins in `_config.yml`
+```yaml
+plugins:
+    - jekyll-asset-post-processor
+```
+
+## Config
+
+`jekyll-asset-post-processor` can be further configured in your Jekyll `_config.yml`.
+
+```yaml
+asset-post-processor:
+    - staging_path: "_staging"
+    - destination_path: "assets"
+```
+
+|Name|Description|Default|
+|-|-|-|
+|`staging_path`|The temporary directory where bundled assets are stored before being moved to the final build. The plugin will automatically add this file to Jekyll's excluded list, you should also add it to your `.gitignore` if necessary.|`_staging`|
+|`destination_path`|The root directory in the site's final build (`_site`) where the bundled assets should be stored.|`assets`|
+
+## Acknowledgements
+
+Parts of the Jekyll code and architectural choices come from [jekyll-asset-pipeline](https://github.com/matthodan/jekyll-asset-pipeline), thanks to Matt Hodan and other contributors of the project.
 
 ## About
 
