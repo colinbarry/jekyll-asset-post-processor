@@ -9,8 +9,8 @@ module JekyllAssetPostProcessor
         end
 
         def process(contents, liquid_context)
-            template = Liquid::Template.parse(contents)
-            SassC::Engine.new(template.render(liquid_context), syntax: :scss, style: :compressed).render
+            sass = SassC::Engine.new(contents, syntax: :scss, style: :compressed).render
+            Liquid::Template.parse(sass).render(liquid_context)
         end
 
     end
